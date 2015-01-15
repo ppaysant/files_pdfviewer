@@ -23,6 +23,8 @@ limitations under the License.
 
 
     <link rel="stylesheet" href="<?php print_unescaped(OCP\Util::linkTo('files_pdfviewer', '3rdparty/pdfjs/viewer.css')); ?>?v=1"/>
+    <link rel="stylesheet" media="screen" type="text/css" href="<?php print_unescaped(OCP\Util::linkTo('core', 'css/jquery-ui-1.10.0.custom.css')); ?>"/>
+    <link rel="stylesheet" href="<?php print_unescaped(OCP\Util::linkTo('core', 'css/share.css')); ?>?v=1"/>
 
     <!-- oC changes-->
 	<script type="text/javascript" src="<?php print_unescaped(OCP\Util::linkTo('core', 'js/jquery-1.10.0.min.js')); ?>?v=1"></script>
@@ -33,6 +35,9 @@ limitations under the License.
     <script type="text/javascript" src="<?php print_unescaped(OCP\Util::linkTo('core', 'js/oc-dialogs.js')); ?>?v=1"></script>
     <script type="text/javascript" src="<?php print_unescaped(OCP\Util::linkTo('core', 'js/underscore.js')); ?>?v=1"></script>
     <script type="text/javascript" src="<?php print_unescaped(OCP\Util::linkTo('core', 'js/js.js')); ?>?v=1"></script>
+    <script type="text/javascript" src="<?php print_unescaped(OCP\Util::linkTo('core', 'js/jquery-ui-1.10.0.custom.js'));?>"></script>
+    <script type="text/javascript" src="/index.php/core/js/oc.js"></script> <!-- route defined in /core/routes.php -->
+    <script type="text/javascript" src="<?php print_unescaped(OCP\Util::linkTo('core', 'js/oc-requesttoken.js')); ?>?v=1"></script>
     <!-- oC changes -->
 
     <script type="text/javascript" src="<?php print_unescaped(OCP\Util::linkTo('files_pdfviewer', '3rdparty/pdfjs/compatibility.js')); ?>?v=1"></script>
@@ -48,11 +53,14 @@ limitations under the License.
 
     <script type="text/javascript" src="<?php print_unescaped(OCP\Util::linkTo('files_pdfviewer', '3rdparty/pdfjs/viewer.js')); ?>?v=1"></script>
     <script type="text/javascript" src="<?php print_unescaped(OCP\Util::linkTo('files_pdfviewer', 'js/files.php')); ?>?file=<?php print_unescaped(urlencode($_['file'])); ?>&amp;dir=<?php print_unescaped(urlencode($_['dir'])); ?>"></script>
-
+    <script type="text/javascript" src="<?php print_unescaped(OCP\Util::linkTo('files_pdfviewer', 'js/share.js')); ?>"></script>
   </head>
 
   <body tabindex="1">
-    <div id="outerContainer" class="loadingInProgress">
+    <input id="allowShareWithLink" type="hidden" value="yes" name="allowShareWithLink" original-title="">
+    <input id="filename" type="hidden" value="<?php print_unescaped(htmlspecialchars($_['file'], ENT_QUOTES)); ?>" name="filename">
+
+    <div id="outerContainer" style="z-index:1" class="loadingInProgress">
 
       <div id="sidebarContainer">
         <div id="toolbarSidebar">
@@ -134,7 +142,7 @@ limitations under the License.
             <button id="toggleHandTool" class="secondaryToolbarButton handTool" title="Enable hand tool" tabindex="27" data-l10n-id="hand_tool_enable">
               <span data-l10n-id="hand_tool_enable_label">Enable hand tool</span>
             </button>
-            
+
             <div class="horizontalToolbarSeparator"></div>
 
             <button id="documentProperties" class="secondaryToolbarButton documentProperties" title="Document Properties…" tabindex="28" data-l10n-id="document_properties">
@@ -168,6 +176,10 @@ limitations under the License.
                 <span id="numPages" class="toolbarLabel"></span>
               </div>
               <div id="toolbarViewerRight">
+                <button id="share" class="toolbarButton share hiddenMediumView" title="Share" tabindex="12" data-l10n-id="share">
+                  <span data-l10n-id="share">Share</span>
+                </button>
+
                 <button id="presentationMode" class="toolbarButton presentationMode hiddenLargeView" title="Switch to Presentation Mode" tabindex="12" data-l10n-id="presentation_mode">
                   <span data-l10n-id="presentation_mode_label">Presentation Mode</span>
                 </button>
@@ -185,10 +197,10 @@ limitations under the License.
                 </a>
 
                 <div class="verticalToolbarSeparator hiddenSmallView"></div>
-                
+
                 <button id="secondaryToolbarToggle" class="toolbarButton" title="Tools" tabindex="17" data-l10n-id="tools">
                   <span data-l10n-id="tools_label">Tools</span>
-                </button> 
+                </button>
               </div>
               <div class="outerCenter">
                 <div class="innerCenter" id="toolbarViewerMiddle">
